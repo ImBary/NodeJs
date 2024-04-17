@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products List</title>
+</head>
+<body>
+<h1>Products</h1>
+<ul>
+    <% if(products.length > 0){ %>
+        <% products.forEach(function(product) { %>
+            <li> Nazwa:  <%= product.name %> Cena:  <%= product.cena %> 
+            <form action="/products" method="POST">
+                <input type="hidden" name="nazwa" value="<%= product.name %>">
+                <input type="hidden" name="cena" value="<%= product.cena %>">
+                <button type="submit">Dodaj</button>
+            </form>
+            <% }); %>
+    <% } else { %>
+        <li>Brak Produktow do wyświetlenia.</li>
+    <% } %>
+</ul>
+</body>
+</html>

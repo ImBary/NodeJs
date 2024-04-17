@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products List</title>
+</head>
+<body>
+    <h1>Koszyk</h1>
+    <ul>
+        <% if(cart.length > 0){ %>
+            <% cart.forEach(function(item) { %>
+                <li>Nazwa: <%= item.nazwa %> Cena: <%= item.cena %></li>
+            <% }); %>
+        <% } else { %>
+            <li>Twój koszyk jest pusty.</li>
+        <% } %>
+    </ul>
+</body>
+
+</html>
