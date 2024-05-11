@@ -15,3 +15,10 @@
 4) tworzenie i edycja postow: pole tekstowe po submit dodaje do bazy post z userem, edycja do rozkminki
 5) komentowanie : tylko na stronie posta po prostu text-field
 6) Personalizacja Interfacu: jakies sortowanie po gwiazdkach??
+
+
+
+//Komentarze//
+1) db set: UserId | Content | PostId
+2) must be: przy usuwaniu posta usunac wszystkie commenty z id posta = IDpost
+

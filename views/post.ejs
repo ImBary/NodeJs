@@ -26,9 +26,29 @@
     <button type="submit" id="updateButton">Update Post</button>
 </form>
 
+<h2>COMMENNTS</h2>
+
+
+<form id="commentPostForm" action="/post/<%= post.id %>" method="POST">
+    <label for="comment">Content:</label>
+    <input type="text" id="comment" name="comment">
+    <button type="submit">Create Comment</button>
+</form>
+
+
+<ul>
+    <% dbComments.forEach(comment => { %>
+        <li><%= comment.comment %> by <%= comment.userName %> </li>
+        
+    <% }) %>
+</ul>
+
+
 <form action="/" method="GET" style="display: inline;">
     <button type="submit">Back</button>
 </form>
+
+
 <script>
     document.getElementById('deletePostForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -40,78 +60,99 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({}) // Empty body for DELETE request
+                body: JSON.stringify({})
             })
             .then(response => {
                 if (response.ok || response.redirected) {
-                    window.location.href = response.url || '/'; // If redirected, use the redirected URL
+                    window.location.href = response.url || '/'; 
                 } else {
                     throw new Error('Failed to delete post');
                 }
             })
             .catch(error => {
                 console.error('Error deleting post:', error);
-                // Handle error (e.g., show error message to user)
+                
             });
         }
     });
 </script>
 <script>
     document.getElementById('updatePostForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); 
 
-        // Get confirmation from the user
+        
         const confirmation = confirm("Are you sure you want to update this post?");
         const contentValue = document.getElementById('content').value;
         const titleValue = document.getElementById('title').value;
         console.log("ejs content"+contentValue);
         if (confirmation) {
-            // If user confirms, proceed with the form submission
             const form = this;
-            // Send a PUT request
             fetch(form.action, {
-                method: 'PUT', // Use PUT method
+                method: 'PUT', 
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    content: contentValue, // Get the content from the form
+                    content: contentValue, 
                     title : titleValue
                 })
             })
             .then(response => {
-                // Check if the request was successful or redirected
+                
                 if (response.ok || response.redirected) {
-                    window.location.reload() // If redirected, navigate to the redirected URL
                 } else {
                     throw new Error('Failed to update post');
                 }
             })
             .catch(error => {
                 console.error('Error updating post:', error);
-                // Handle error (e.g., show error message to user)
+                
             });
         }
     });
 </script>
 
 <script>
-    // Get the current post content from the server-side
+    document.getElementById('commentPostForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        const contentValue = document.getElementById('comment').value;
+            const form = this;
+            
+            fetch(form.action, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    comment: contentValue, 
+                })
+            })
+            .then(response => {
+                if (response.ok || response.redirected) {
+                    window.location.reload() 
+                } else {
+                    throw new Error('Failed to comment post');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating post:', error);
+            });
+        
+    });
+</script>
+
+<script>
     const currentContent = "<%= post.content %>";
     const currentTitle = "<%= post.title%>";
-    // Set the value of the content input field to the current post content
     document.getElementById('content').value = currentContent;
     document.getElementById('title').value = currentTitle;
 </script>
 
 <script>
     const editButton = document.getElementById('editButton');
-    // Get the form
     const updatePostForm = document.getElementById('updatePostForm');
 
-    // Add click event listener to the edit button
     editButton.addEventListener('click', function() {
-        // Toggle the visibility of the form
         if (updatePostForm.style.display === 'none') {
             updatePostForm.style.display = 'block';
         } else {

@@ -21,6 +21,7 @@ const getUserById = (id) => {
     return knex('users').select().where('id', id);
 };
 
+
 const getPostByUserId = (userId) =>{
     return knex('posts').select().where('userId',userId);
 };
@@ -28,7 +29,7 @@ const getPostByUserId = (userId) =>{
 
 const getUserIdByUsersName = async (userName) =>{
     const userId = await knex('users').select('id').where('name',userName);
-    console.log("api user id: " +userId[0]);
+    //console.log("api user id: " +userId[0]);
     return userId ? userId : -1;
 }
 
@@ -45,7 +46,8 @@ const deletePostById = async (id)=>{
     const isHere = await knex('posts').select().where('id',id);
     if(isHere){
        await knex('posts').delete().where('id',id);
-       await console.log("deleted:" + isHere[0])
+       await knex('comments').delete().where('PostId',id);
+        //console.log("deleted:" + isHere[0])
        return isHere;
     }else{
         console.log("no post with this id")
@@ -69,6 +71,19 @@ const updatePostByUserId = async(id,content,title) =>{
 
 }
 
+const createCommentToPost = async(comment)=>{
+    //console.log("api comment: "+comment);
+    return await knex('comments').insert(comment);
+}
+
+
+const getCommentsByPostId = async(postId)=>{
+    return await knex('comments').select().where('PostId',postId);
+}
+
+
+
+
 const getCodeByUserName = async(userName)=>{
     const userCode =  await knex('users').select('code').where('name',userName);
     return userCode ? userCode : -1;
@@ -87,6 +102,7 @@ module.exports = {
     getPostById,
     deletePostById,
     updatePostByUserId ,
-    getCodeByUserName 
-
+    getCodeByUserName ,
+    getCommentsByPostId,
+    createCommentToPost
 };

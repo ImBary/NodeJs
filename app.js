@@ -129,19 +129,51 @@ app.get('/logout',(req,res)=>{
 
 app.get('/posts/:id', async (req,res)=>{
     const postId = req.params.id;
-
     try{
         const dbPost = await api.getPostById(postId);
+        const dbComments = await api.getCommentsByPostId(postId);
         if(!dbPost || dbPost===1){
             return res.redirect('/')
         }
         const post = dbPost[0];
-        res.render('post',{post:post});
+        console.log(JSON.stringify(dbComments));
+        res.render('post',{post:post,dbComments});
     }catch(err){
         throw new Error(err);
     }
     
 })
+
+app.post('/post/:id', async (req, res) => {
+    const postId = req.params.id;
+    console.log("comment postId: " + postId);
+    const { comment } = req.body;
+    console.log("comment: " + comment);
+    let usrName = 'nieznajomy';
+    if (req.session.user) {
+        usrName = req.session.user;
+    } else if (req.cookies.userName) {
+        usrName = req.cookies.usrname;
+        req.session.user = usrName;
+    }
+    const user = await api.getUserIdByUsersName(usrName);
+    console.log("comment userId: " + usrName);
+
+    try {
+        if (usrName === 'nieznajomy' && comment != null && comment.length >= 1) {
+            const comN = { UserId: 0, comment: comment, PostId: postId, userName: usrName };
+            await api.createCommentToPost(comN);
+        } else if (usrName !== 'nieznajomy' && comment != null && comment.length >= 1) {
+            const com = { UserId: user[0].id, comment: comment, PostId: postId, userName: usrName };
+            await api.createCommentToPost(com);
+        }
+
+        res.sendStatus(200); 
+    } catch (error) {
+        console.error("Error creating comment:", error);
+        res.sendStatus(500); 
+    }
+});
 
 app.delete('/posts/:id', async (req, res) => {
     const postId = req.params.id;
@@ -179,11 +211,12 @@ app.delete('/posts/:id', async (req, res) => {
 
 app.put('/post/:id',async (req,res)=>{
     const postId = req.params.id;
+    console.log("update post ID: "+postId);
     const { content,title} = req.body;
-    console.log("req body1 "+req.body);
-    console.log("req body "+req.body.content);
+    //console.log("req body1 "+req.body);
+    //console.log("req body "+req.body.content);
     let userName = 'Nieznajomy';
-    console.log("content: "+content);
+    //console.log("content: "+content);
     if(req.session.user){
         userName = req.session.user;
     }else if(req.cookies.userName){
@@ -192,8 +225,8 @@ app.put('/post/:id',async (req,res)=>{
     }
     const postToUpdate = await api.getPostById(postId);
     const userFromDb = await api.getUserIdByUsersName(userName); // corrected variable name
-    console.log("update:",postToUpdate[0] );
-    console.log("user:", userFromDb[0].id);
+    //console.log("update:",postToUpdate[0] );
+    //console.log("user:", userFromDb[0].id);
     try {
 
         if(userFromDb[0].id===postToUpdate[0].userId){
