@@ -38,16 +38,42 @@
 
 <ul>
     <% dbComments.forEach(comment => { %>
-        <li><%= comment.comment %> by <%= comment.userName %> </li>
-        
+        <li>
+            <%= comment.comment %> by <%= comment.userName %>
+            <% if (comment.userId === loggedInUserId || post.userId === loggedInUserId) { %>
+                <button onclick="deleteComment('<%= comment.id %>')">Delete</button>
+            <% } %>
+        </li>
     <% }) %>
 </ul>
+
 
 
 <form action="/" method="GET" style="display: inline;">
     <button type="submit">Back</button>
 </form>
-
+<script>
+    function deleteComment(commentId) {
+        // Send a request to the server to delete the comment with the given ID
+        fetch(`/comments/${commentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // If the deletion was successful, reload the page to reflect the changes
+                window.location.reload();
+            } else {
+                console.error('Failed to delete comment');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting comment:', error);
+        });
+    }
+</script>
 
 <script>
     document.getElementById('deletePostForm').addEventListener('submit', function(event) {

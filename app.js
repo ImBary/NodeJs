@@ -127,17 +127,46 @@ app.get('/logout',(req,res)=>{
     }));
 });
 
+app.delete('/comments/:id', async (req, res) => {
+    const commentId = req.params.id;
+
+    try {
+        await api.deleteCommentById(commentId);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        res.sendStatus(500);
+    }
+});
+
+
 app.get('/posts/:id', async (req,res)=>{
     const postId = req.params.id;
+    let usrName = 'nieznajomy'
+    if(req.session.user){
+        usrName = req.session.user;
+    }else if(req.cookies.userName){
+        usrName = req.cookies.usrname;
+        req.session.user = usrName;
+    }
     try{
+        const user = await api.getUserIdByUsersName(usrName);
         const dbPost = await api.getPostById(postId);
         const dbComments = await api.getCommentsByPostId(postId);
         if(!dbPost || dbPost===1){
             return res.redirect('/')
         }
         const post = dbPost[0];
-        console.log(JSON.stringify(dbComments));
-        res.render('post',{post:post,dbComments});
+        if(usrName!=='nieznajomy'){
+            let loggedInUserId = user[0].id;
+            console.log(JSON.stringify(dbComments));
+            res.render('post',{post:post,dbComments,loggedInUserId});
+        }else if (usrName==='nieznajomy'){
+            let loggedInUserId = 0;
+            console.log(JSON.stringify(dbComments));
+            res.render('post',{post:post,dbComments,loggedInUserId});
+        }
+        
     }catch(err){
         throw new Error(err);
     }

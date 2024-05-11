@@ -89,6 +89,9 @@ const getCodeByUserName = async(userName)=>{
     return userCode ? userCode : -1;
 }
 
+const deleteCommentById = async(commentId)=>{
+    return await knex('comments').delete().where('id',commentId);
+}
 
 
 module.exports = {
@@ -104,5 +107,6 @@ module.exports = {
     updatePostByUserId ,
     getCodeByUserName ,
     getCommentsByPostId,
-    createCommentToPost
+    createCommentToPost,
+    deleteCommentById
 };
