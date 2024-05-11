@@ -35,13 +35,13 @@
     <button type="submit">Create Comment</button>
 </form>
 
-
-<ul>
+<button id="filterCommentsBtn">Show yours comments</button>
+<ul id="commentsList">
     <% dbComments.forEach(comment => { %>
-        <li>
+        <li class="comment" data-user-id="<%= comment.userId %>" data-post-id="<%= post.userId %>">
             <%= comment.comment %> by <%= comment.userName %>
             <% if (comment.userId === loggedInUserId || post.userId === loggedInUserId) { %>
-                <button onclick="deleteComment('<%= comment.id %>')">Delete</button>
+                <button class="deleteBtn" data-comment-id="<%= comment.id %>">Delete</button>
             <% } %>
         </li>
     <% }) %>
@@ -49,9 +49,49 @@
 
 
 
+
 <form action="/" method="GET" style="display: inline;">
     <button type="submit">Back</button>
 </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let filterActive = false;
+
+        document.getElementById('filterCommentsBtn').addEventListener('click', function() {
+            const comments = document.querySelectorAll('.comment');
+            const loggedInUserId = '<%= loggedInUserId %>'; 
+            
+            if (filterActive) {
+              
+                comments.forEach(comment => {
+                    comment.style.display = 'block';
+                });
+                filterActive = false; 
+            } else {
+               
+                comments.forEach(comment => {
+                    const commentUserId = comment.dataset.userId;
+                    const commentPostId = comment.dataset.postId;
+                    
+                    if (commentUserId === loggedInUserId ) {
+                        comment.style.display = 'block'; 
+                    } else {
+                        comment.style.display = 'none'; 
+                    }
+                });
+                filterActive = true; 
+            }
+        });
+        
+        document.querySelectorAll('.deleteBtn').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                deleteComment(commentId);
+            });
+        });
+    });
+</script>
+
 <script>
     function deleteComment(commentId) {
         // Send a request to the server to delete the comment with the given ID
