@@ -1,0 +1,17 @@
+
+//Generall//
+1)Wyswietlanie postow: stronaa gllowna z lista wszystkich postow git ########
+2)Szczegóły postu: Mozlliwosci przeczytania pelnej tresci posta #############
+3)Rejestracja i logowanie: mozliwosc zakladania konta i logowania do systemu ########
+4)Tworzenie i edycja postow: zalogowani użytkownicy mogą tworzyć i edytowac swoje posty #####
+5)Komentowanie: Użytkownicy mogą dodawać komentarze pod postami.
+6)Personalizacja Interfacu: Możliwość zmianny ustawień wyglądu przez użykownika.
+
+
+//Type beat//
+1) stworzenie bazy: USERS, POSTS
+2) szegoly postow: Posty na głownej bedą mieć tylko header po kliknieciu redirect do /posts/post 
+3) Rejestracjaa i log: z początku każdy user="niezalogowany" po logowaniu user="imie"
+4) tworzenie i edycja postow: pole tekstowe po submit dodaje do bazy post z userem, edycja do rozkminki
+5) komentowanie : tylko na stronie posta po prostu text-field
+6) Personalizacja Interfacu: jakies sortowanie po gwiazdkach??
